@@ -562,9 +562,9 @@ public class SuperSwipeRefreshLayout extends ViewGroup {
      * @return
      */
     public boolean isChildScrollToBottom() {
-        if (isChildScrollToTop()) {
-            return false;
-        }
+        // if (isChildScrollToTop()) {
+        //     return false;
+        // }
         if (mTarget instanceof RecyclerView) {
             RecyclerView recyclerView = (RecyclerView) mTarget;
             LayoutManager layoutManager = recyclerView.getLayoutManager();
@@ -660,12 +660,12 @@ public class SuperSwipeRefreshLayout extends ViewGroup {
                     return false;
                 }
                 float yDiff = 0;
-                if (isChildScrollToBottom()) {
+                if (isChildScrollToBottom() && mInitialMotionY - y > 0) {
                     yDiff = mInitialMotionY - y;// 计算上拉距离
                     if (yDiff > mTouchSlop && !mIsBeingDragged) {// 判断是否下拉的距离足够
                         mIsBeingDragged = true;// 正在上拉
                     }
-                } else {
+                } else if(isChildScrollToTop() && mInitialMotionY - y < 0) {
                     yDiff = y - mInitialMotionY;// 计算下拉距离
                     if (yDiff > mTouchSlop && !mIsBeingDragged) {// 判断是否下拉的距离足够
                         mIsBeingDragged = true;// 正在下拉
@@ -714,9 +714,9 @@ public class SuperSwipeRefreshLayout extends ViewGroup {
             return false;
         }
 
-        if (isChildScrollToBottom()) {// 上拉加载更多
+        if (isChildScrollToBottom() && mInitialMotionY - y > 0) {// 上拉加载更多
             return handlerPushTouchEvent(ev, action);
-        } else {// 下拉刷新
+        } else if(isChildScrollToTop() && mInitialMotionY - y < 0) {// 下拉刷新
             return handlerPullTouchEvent(ev, action);
         }
     }
